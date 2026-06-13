@@ -748,7 +748,7 @@ select option {
 
   async function loadRestaurants() {
     try {
-      const res = await fetch("/restaurants.json");
+      const res = await fetch("restaurants.json");
       if (!res.ok) throw new Error("Не удалось загрузить restaurants.json");
       restaurants = await res.json();
     } catch (e) {
