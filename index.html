@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Budget Optimizer</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Restaurant Budget Optimizer</h1>
+        <p>Найди оптимальный заказ по твоему бюджету</p>
+        
+        <input type="number" id="budget" placeholder="5000" value="5000">
+        <button onclick="optimize()">Найти варианты</button>
+        
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        function optimize() {
+            const budget = document.getElementById('budget').value;
+            document.getElementById('results').innerHTML = 
+                '<div class="card">Тест: бюджет ' + budget + ' тенге принят!</div>';
+        }
+    </script>
+</body>
+</html>
