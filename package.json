@@ -1,0 +1,12 @@
+{
+  "name": "restaurant-budget-optimizer",
+  "version": "1.0.0",
+  "description": "Restaurant Budget Optimizer - static frontend with simple Node server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

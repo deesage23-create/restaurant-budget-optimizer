@@ -1,1 +1,1 @@
-web: echo 'Frontend deployed'
+web: npm start
