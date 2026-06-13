@@ -741,7 +741,7 @@
       restaurants = await res.json();
     } catch (e) {
       console.error(e);
-      showToast("Ошибка загрузки restaurant-базы. Проверьте файл restaurants.json");
+      showToast("Ошибка загрузки базы ресторанов. Проверьте restaurants.json");
     }
   }
 
@@ -778,16 +778,20 @@
 
     if (!hotList.length || !drinks.length || !sideList.length) return null;
 
-    let bestFit = null;     // лучшее, что укладывается в бюджет
-    let bestOver = null;    // ближайшее, которое не влезло
+    let bestFit = null;   // лучший сет ВНУТРИ бюджета
+    let bestOver = null;  // ближайший сет ВЫШЕ бюджета
 
     hotList.forEach(hot => {
       sideList.forEach(side => {
         drinks.forEach(drink => {
           const combo = calculateComboTotal(hot, side, drink, servicePercent, tipPercent);
 
-          const data = {
+          const baseData = {
             restaurant: rest.name,
+            address: rest.address || "",
+            phone: rest.phone || "",
+            mapsUrl: rest.mapsUrl || "",
+            deliveryUrl: rest.deliveryUrl || "",
             hotName: hot.name,
             sideName: side.name,
             drinkName: drink.name,
@@ -799,18 +803,13 @@
           };
 
           if (combo.total <= perPersonBudget) {
-            // кандидат, который влез
-            if (
-              !bestFit ||
-              combo.total > bestFit.total // берём максимально дорогой, но всё ещё в бюджете
-            ) {
-              bestFit = data;
+            if (!bestFit || combo.total > bestFit.total) {
+              bestFit = baseData;
             }
           } else {
-            // кандидат выше бюджета
             const over = combo.total - perPersonBudget;
             if (!bestOver || over < bestOver.total - perPersonBudget) {
-              bestOver = data;
+              bestOver = baseData;
             }
           }
         });
@@ -842,6 +841,7 @@
       guestsInput.value = "1";
     }
 
+    // сохраняем настройки
     localStorage.setItem("bo_totalBudget", String(totalBudget));
     localStorage.setItem("bo_guests", String(guests));
     localStorage.setItem("bo_setType", setType);
@@ -868,12 +868,8 @@
 
       const { bestFit, bestOver } = best;
 
-      if (bestFit) {
-        fits.push(bestFit);
-      }
-      if (bestOver) {
-        exceeds.push(bestOver);
-      }
+      if (bestFit) fits.push(bestFit);
+      if (bestOver) exceeds.push(bestOver);
     });
 
     if (fits.length === 0) {
@@ -908,6 +904,10 @@
     if (fits.length > 0) {
       fits.forEach((o, index) => {
         const remaining = perPersonBudget - o.total;
+
+        const phoneClean = o.phone ? o.phone.replace(/\s+/g, "") : "";
+        const addressText = o.address || "уточнить по телефону";
+
         html += `
           <article class="card">
             <div class="card-header">
@@ -932,6 +932,17 @@
                   Остаток ${remaining} ₸
                 </span>
               </div>
+              <div style="margin-top:6px;">
+                <div style="font-size:11px; color:var(--text-muted);">
+                  Адрес: <strong>${addressText}</strong><br/>
+                  Телефон: <strong>${o.phone || "—"}</strong>
+                </div>
+                <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px;">
+                  ${o.phone ? `<a href="tel:${phoneClean}" class="chip">Позвонить</a>` : ""}
+                  ${o.mapsUrl ? `<a href="${o.mapsUrl}" target="_blank" rel="noopener" class="chip">Открыть на карте</a>` : ""}
+                  ${o.deliveryUrl ? `<a href="${o.deliveryUrl}" target="_blank" rel="noopener" class="chip">Открыть доставку</a>` : ""}
+                </div>
+              </div>
             </div>
           </article>
         `;
@@ -939,8 +950,8 @@
     } else {
       html += `
         <p class="results-empty">
-          Ни один сет типа «${sideLabel.toLowerCase()}» не помещается в бюджет на человека ${perPersonBudget} ₸.
-          Попробуйте изменить тип сета, увеличить бюджет или снизить проценты.
+          Ни один сет выбранного типа не помещается в бюджет на человека ${perPersonBudget} ₸.
+          Попробуйте изменить тип сета, увеличить бюджет или уменьшить количество гостей.
         </p>
       `;
     }
@@ -948,6 +959,9 @@
     if (exceeds.length > 0) {
       exceeds.forEach(o => {
         const over = o.total - perPersonBudget;
+        const phoneClean = o.phone ? o.phone.replace(/\s+/g, "") : "";
+        const addressText = o.address || "уточнить по телефону";
+
         html += `
           <article class="card exceeded">
             <div class="card-header">
@@ -972,6 +986,17 @@
                   Перерасход ${over} ₸
                 </span>
               </div>
+              <div style="margin-top:6px;">
+                <div style="font-size:11px; color:var(--text-muted);">
+                  Адрес: <strong>${addressText}</strong><br/>
+                  Телефон: <strong>${o.phone || "—"}</strong>
+                </div>
+                <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px;">
+                  ${o.phone ? `<a href="tel:${phoneClean}" class="chip">Позвонить</a>` : ""}
+                  ${o.mapsUrl ? `<a href="${o.mapsUrl}" target="_blank" rel="noopener" class="chip">Открыть на карте</a>` : ""}
+                  ${o.deliveryUrl ? `<a href="${o.deliveryUrl}" target="_blank" rel="noopener" class="chip">Открыть доставку</a>` : ""}
+                </div>
+              </div>
             </div>
           </article>
         `;
@@ -991,15 +1016,11 @@
 
     if (savedBudget) {
       const parsed = parseInt(savedBudget, 10);
-      if (!isNaN(parsed) && parsed > 0) {
-        budgetInput.value = parsed;
-      }
+      if (!isNaN(parsed) && parsed > 0) budgetInput.value = parsed;
     }
     if (savedGuests) {
       const parsedG = parseInt(savedGuests, 10);
-      if (!isNaN(parsedG) && parsedG > 0) {
-        guestsInput.value = parsedG;
-      }
+      if (!isNaN(parsedG) && parsedG > 0) guestsInput.value = parsedG;
     }
     if (savedSetType && setTypeSelect) {
       setTypeSelect.value = savedSetType;
@@ -1007,6 +1028,5 @@
 
     optimize();
   });
-</script>
-</body>
+</script></body>
 </html>
