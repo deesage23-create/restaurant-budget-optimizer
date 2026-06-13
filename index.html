@@ -16,7 +16,6 @@
       --border-subtle: rgba(148, 163, 184, 0.45);
       --badge-bg: rgba(148, 163, 184, 0.18);
       --danger: #f97373;
-      --danger-soft: rgba(248, 113, 113, 0.12);
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.65);
       --radius-lg: 18px;
       --radius-md: 12px;
@@ -42,9 +41,11 @@
         var(--bg-dark);
       color: var(--text-main);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       padding: 24px;
+      gap: 16px;
     }
 
     .app-shell {
@@ -186,7 +187,7 @@
       margin-bottom: 18px;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .controls {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -493,23 +494,90 @@
       border-radius: 999px;
       background: var(--accent);
     }
+
+    .footer {
+      max-width: 1120px;
+      width: 100%;
+      padding: 14px 18px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.14), transparent 55%),
+        rgba(15, 23, 42, 0.96);
+      color: var(--text-muted);
+      font-size: 12px;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.75);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .footer-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .footer-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-list li {
+      margin-bottom: 4px;
+    }
+
+    .footer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .footer-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .footer-muted {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
 <div class="app-shell">
-  <!-- Левая панель: ввод и описание -->
+  <!-- Левая панель -->
   <section class="panel">
     <div class="panel-inner">
       <div class="brand-pill">
-        <span class="brand-pill-logo">RO</span>
-        <span>Restaurant Optimizer · v1.0</span>
+        <span class="brand-pill-logo">BO</span>
+        <span>Budget Optimizer · v1.0</span>
         <span class="brand-pill-dot"></span>
       </div>
 
       <div class="eyebrow">Бюджет на вечер</div>
       <h1>Подбери идеальный заказ под свой бюджет</h1>
       <p class="subtitle">
-        Введи сумму, укажи процент услуги и чаевых — получишь готовые комбинации из разных ресторанов с максимальной выгодой.
+        Budget Optimizer помогает быстро подобрать сет из блюд в разных ресторанах — с учётом услуги и чаевых,
+        без выхода за общий бюджет.
       </p>
 
       <div class="mini-metrics">
@@ -527,10 +595,16 @@
 
       <div class="controls">
         <div>
-          <div class="field-label">Бюджет, тенге <span>(обязательно)</span></div>
+          <div class="field-label">Общий бюджет, тенге <span>(обязательно)</span></div>
           <div class="input-shell">
             <span class="prefix">₸</span>
-            <input type="number" id="budget" min="1" value="5000" placeholder="Например, 5000" />
+            <input type="number" id="budget" min="1" value="5000" placeholder="Например, 15000" />
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Количество гостей</div>
+          <div class="input-shell">
+            <input type="number" id="guests" min="1" value="1" />
           </div>
         </div>
         <div>
@@ -545,17 +619,30 @@
             <input type="number" id="tips" min="0" max="30" value="5" />
           </div>
         </div>
-        <div class="select-shell">
-          <div class="field-label">Сортировка вариантов</div>
-          <div class="input-shell">
-            <select id="sort">
-              <option value="best">Лучшее использование бюджета</option>
-              <option value="cheapest">Самый недорогой вариант</option>
-              <option value="name">По названию ресторана</option>
-            </select>
-          </div>
-        </div>
-      </div>
+       <!-- Сортировка -->
+  <div class="select-shell">
+    <div class="field-label">Сортировка вариантов</div>
+    <div class="input-shell">
+      <select id="sort">
+        <option value="best">Лучшее использование бюджета</option>
+        <option value="cheapest">Самый недорогой вариант</option>
+        <option value="name">По названию ресторана</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- НОВОЕ: тип сета -->
+  <div class="select-shell">
+    <div class="field-label">Тип сета</div>
+    <div class="input-shell">
+      <select id="setType">
+        <option value="salad">Горячее + салат + напиток</option>
+        <option value="baked">Горячее + выпечка + напиток</option>
+        <option value="dessert">Горячее + десерт + напиток</option>
+      </select>
+    </div>
+  </div>
+</div>
 
       <button class="primary-btn" onclick="optimize()">
         <span class="primary-btn-dot"></span>
@@ -563,12 +650,13 @@
       </button>
 
       <p class="helper-text">
-        Рекомендуем оставлять небольшой запас (5–15%) от бюджета — приложение автоматически покажет остаток или перерасход.
+        Введите общий бюджет и количество гостей — приложение автоматически посчитает рекомендации,
+        исходя из бюджета <strong>на одного человека</strong>.
       </p>
     </div>
   </section>
 
-  <!-- Правая панель: результаты -->
+  <!-- Правая панель -->
   <section class="panel">
     <div class="panel-inner">
       <div class="results-header">
@@ -580,7 +668,7 @@
           </div>
         </div>
         <div class="results-header-meta" id="summary-meta">
-          Бюджет: 5000 ₸ · Услуга: 10% · Чаевые: 5%
+          Бюджет: 5000 ₸ · Гостей: 1 · Услуга: 10% · Чаевые: 5%
         </div>
       </div>
 
@@ -589,54 +677,73 @@
   </section>
 </div>
 
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-title">О сервисе Budget Optimizer</div>
+      <div class="footer-badge">
+        <span class="footer-dot"></span>
+        <span>Учебный демо‑проект по оптимизации бюджетов</span>
+      </div>
+      <p>
+        Сервис не оформляет реальные заказы и не связан с конкретными ресторанами. Все цены условные и
+        используются для демонстрации логики расчёта бюджета на компанию гостей.
+      </p>
+    </div>
+
+    <div>
+      <div class="footer-title">FAQ</div>
+      <ul class="footer-list">
+        <li>• Можно менять бюджет, количество гостей, услугу и чаевые.</li>
+        <li>• Стоимость блюд и список ресторанов задаются прямо в коде.</li>
+        <li>• Сервис показывает, какой сет укладывается в бюджет, а какой нет.</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-title">Контакты и технологии</div>
+      <ul class="footer-list">
+        <li>• Автор: Мирзахмедов Давлатбек Илхамович</li>
+        <li>• Код: HTML, CSS, JavaScript, Node.js (Express).</li>
+        <li>• Хостинг: Railway, репозиторий — GitHub.</li>
+      </ul>
+      <p class="footer-muted">
+        Дальнейшее развитие: реальные API ресторанов, история расчётов, экспорт отчётов и авторизация пользователей.
+      </p>
+    </div>
+  </div>
+</footer>
+
 <div class="toast" id="toast">
   <span class="toast-dot"></span>
   <span id="toast-text"></span>
 </div>
 
 <script>
-  const restaurants = [
-    {
-      name: "Ресторан А · Центр",
-      first: { name: "Салат «Цезарь»", price: 800 },
-      second: { name: "Пицца Маргарита", price: 1500 },
-      drink: { name: "Кола 0.5 л", price: 400 }
-    },
-    {
-      name: "Ресторан Б · Азия",
-      first: { name: "Суп фо", price: 900 },
-      second: { name: "Классический бургер", price: 1800 },
-      drink: { name: "Вода 0.5 л", price: 300 }
-    },
-    {
-      name: "Ресторан В · Гриль",
-      first: { name: "Грибной крем-суп", price: 700 },
-      second: { name: "Шашлык из говядины", price: 2200 },
-      drink: { name: "Морс", price: 350 }
-    },
-    {
-      name: "Ресторан Г · Домашний",
-      first: { name: "Окрошка", price: 600 },
-      second: { name: "Плов", price: 1600 },
-      drink: { name: "Компот", price: 300 }
-    },
-    {
-      name: "Ресторан Д · Стейк-хаус",
-      first: { name: "Салат «Греческий»", price: 850 },
-      second: { name: "Стейк", price: 2800 },
-      drink: { name: "Сок", price: 450 }
-    }
-  ];
+  let restaurants = [];
 
   const budgetInput = document.getElementById("budget");
+  const guestsInput = document.getElementById("guests");
   const serviceInput = document.getElementById("service");
   const tipsInput = document.getElementById("tips");
   const sortSelect = document.getElementById("sort");
+  const setTypeSelect = document.getElementById("setType");
   const resultsDiv = document.getElementById("results");
   const summaryMeta = document.getElementById("summary-meta");
   const summaryPill = document.getElementById("summary-pill");
   const toast = document.getElementById("toast");
   const toastText = document.getElementById("toast-text");
+
+  async function loadRestaurants() {
+    try {
+      const res = await fetch("/restaurants.json");
+      if (!res.ok) throw new Error("Не удалось загрузить restaurants.json");
+      restaurants = await res.json();
+    } catch (e) {
+      console.error(e);
+      showToast("Ошибка загрузки restaurant-базы. Проверьте файл restaurants.json");
+    }
+  }
 
   function showToast(message) {
     toastText.textContent = message;
@@ -646,17 +753,13 @@
     }, 2300);
   }
 
-  function calculateOption(rest, servicePercent, tipPercent) {
-    const subtotal = rest.first.price + rest.second.price + rest.drink.price;
+  function calculateComboTotal(hot, side, drink, servicePercent, tipPercent) {
+    const subtotal = hot.price + side.price + drink.price;
     const service = subtotal * (servicePercent / 100);
     const tip = subtotal * (tipPercent / 100);
     const total = subtotal + service + tip;
 
     return {
-      restaurant: rest.name,
-      firstName: rest.first.name,
-      secondName: rest.second.name,
-      drinkName: rest.drink.name,
       subtotal,
       service: Math.round(service),
       tip: Math.round(tip),
@@ -664,63 +767,157 @@
     };
   }
 
-  function optimize() {
-    const budget = parseInt(budgetInput.value, 10);
-    const servicePercent = parseInt(serviceInput.value, 10);
-    const tipPercent = parseInt(tipsInput.value, 10);
-    const sortMode = sortSelect.value;
+  function findBestComboForRestaurant(rest, setType, perPersonBudget, servicePercent, tipPercent) {
+    const hotList = rest.hot || [];
+    const drinks = rest.drinks || [];
+    let sideList = [];
 
-    if (!budget || budget <= 0) {
-      showToast("Введите бюджет больше 0 тенге.");
+    if (setType === "salad") sideList = rest.salads || [];
+    else if (setType === "baked") sideList = rest.baked || [];
+    else if (setType === "dessert") sideList = rest.desserts || [];
+
+    if (!hotList.length || !drinks.length || !sideList.length) return null;
+
+    let bestFit = null;     // лучшее, что укладывается в бюджет
+    let bestOver = null;    // ближайшее, которое не влезло
+
+    hotList.forEach(hot => {
+      sideList.forEach(side => {
+        drinks.forEach(drink => {
+          const combo = calculateComboTotal(hot, side, drink, servicePercent, tipPercent);
+
+          const data = {
+            restaurant: rest.name,
+            hotName: hot.name,
+            sideName: side.name,
+            drinkName: drink.name,
+            subtotal: combo.subtotal,
+            service: combo.service,
+            tip: combo.tip,
+            total: combo.total,
+            setType
+          };
+
+          if (combo.total <= perPersonBudget) {
+            // кандидат, который влез
+            if (
+              !bestFit ||
+              combo.total > bestFit.total // берём максимально дорогой, но всё ещё в бюджете
+            ) {
+              bestFit = data;
+            }
+          } else {
+            // кандидат выше бюджета
+            const over = combo.total - perPersonBudget;
+            if (!bestOver || over < bestOver.total - perPersonBudget) {
+              bestOver = data;
+            }
+          }
+        });
+      });
+    });
+
+    return { bestFit, bestOver };
+  }
+
+  function optimize() {
+    const totalBudget = parseInt(budgetInput.value, 10);
+    let guests = parseInt(guestsInput.value, 10);
+    const servicePercent = parseInt(serviceInput.value, 10) || 0;
+    const tipPercent = parseInt(tipsInput.value, 10) || 0;
+    const sortMode = sortSelect.value;
+    const setType = setTypeSelect.value;
+
+    if (!totalBudget || totalBudget <= 0) {
+      showToast("Введите общий бюджет больше 0 тенге.");
       resultsDiv.innerHTML =
         '<p class="results-empty">Введите корректный бюджет, чтобы увидеть варианты.</p>';
       summaryPill.innerHTML =
-        '<span class="pill-dot-red"></span><span>Требуется бюджет</span>';
+        '<span class="pill-dot-red"></span><span>Требуется общий бюджет</span>';
       return;
     }
 
-    summaryMeta.textContent = `Бюджет: ${budget} ₸ · Услуга: ${servicePercent}% · Чаевые: ${tipPercent}%`;
+    if (!guests || guests <= 0) {
+      guests = 1;
+      guestsInput.value = "1";
+    }
 
-    const options = restaurants.map(r =>
-      calculateOption(r, servicePercent, tipPercent)
-    );
+    localStorage.setItem("bo_totalBudget", String(totalBudget));
+    localStorage.setItem("bo_guests", String(guests));
+    localStorage.setItem("bo_setType", setType);
 
-    const fits = options.filter(o => o.total <= budget);
-    const exceeds = options.filter(o => o.total > budget);
+    const perPersonBudget = Math.floor(totalBudget / guests);
+
+    summaryMeta.textContent =
+      `Бюджет: ${totalBudget} ₸ · Гостей: ${guests} · Бюджет на человека: ` +
+      `${perPersonBudget} ₸ · Услуга: ${servicePercent}% · Чаевые: ${tipPercent}%`;
+
+    const fits = [];
+    const exceeds = [];
+
+    restaurants.forEach(rest => {
+      const best = findBestComboForRestaurant(
+        rest,
+        setType,
+        perPersonBudget,
+        servicePercent,
+        tipPercent
+      );
+
+      if (!best) return;
+
+      const { bestFit, bestOver } = best;
+
+      if (bestFit) {
+        fits.push(bestFit);
+      }
+      if (bestOver) {
+        exceeds.push(bestOver);
+      }
+    });
 
     if (fits.length === 0) {
       summaryPill.innerHTML =
-        '<span class="pill-dot-red"></span><span>Все варианты выходят за бюджет</span>';
+        '<span class="pill-dot-red"></span><span>Нет сетов в рамках бюджета на человека</span>';
     } else {
       summaryPill.innerHTML =
         '<span class="pill-dot-green"></span><span>Найдено ' +
         fits.length +
-        " подходящих вариантов</span>";
+        " подходящих сетов</span>";
     }
 
     if (sortMode === "best") {
-      fits.sort((a, b) => (budget - a.total) - (budget - b.total));
+      fits.sort((a, b) => (perPersonBudget - a.total) - (perPersonBudget - b.total));
     } else if (sortMode === "cheapest") {
       fits.sort((a, b) => a.total - b.total);
     } else if (sortMode === "name") {
       fits.sort((a, b) => a.restaurant.localeCompare(b.restaurant, "ru"));
     }
 
+    exceeds.sort((a, b) => a.total - b.total);
+
     let html = "";
+
+    const sideLabel =
+      setType === "salad"
+        ? "Салат"
+        : setType === "baked"
+        ? "Выпечка"
+        : "Десерт";
 
     if (fits.length > 0) {
       fits.forEach((o, index) => {
-        const remaining = budget - o.total;
+        const remaining = perPersonBudget - o.total;
         html += `
           <article class="card">
             <div class="card-header">
               <div class="card-title">
                 <span>${index + 1}. ${o.restaurant}</span>
-                <span class="badge">В пределах бюджета</span>
+                <span class="badge">В пределах бюджета на человека</span>
               </div>
               <div class="chip-row">
-                <span class="chip">Первое: ${o.firstName}</span>
-                <span class="chip">Второе: ${o.secondName}</span>
+                <span class="chip">Горячее: ${o.hotName}</span>
+                <span class="chip">${sideLabel}: ${o.sideName}</span>
                 <span class="chip">Напиток: ${o.drinkName}</span>
               </div>
             </div>
@@ -728,7 +925,7 @@
               <div>Сумма блюд: <strong>${o.subtotal} ₸</strong></div>
               <div>Услуга: <strong>${o.service} ₸</strong> · Чаевые: <strong>${o.tip} ₸</strong></div>
               <div>
-                Итоговая сумма:
+                Итоговая сумма на одного:
                 <strong class="summary-accent">${o.total} ₸</strong>
                 <span class="badge-pill" style="margin-left: 6px;">
                   <span class="badge-pill-dot"></span>
@@ -742,26 +939,25 @@
     } else {
       html += `
         <p class="results-empty">
-          Ни один пресет не помещается в бюджет ${budget} ₸. Попробуйте увеличить сумму
-          или уменьшить услугу/чаевые.
+          Ни один сет типа «${sideLabel.toLowerCase()}» не помещается в бюджет на человека ${perPersonBudget} ₸.
+          Попробуйте изменить тип сета, увеличить бюджет или снизить проценты.
         </p>
       `;
     }
 
     if (exceeds.length > 0) {
-      exceeds.sort((a, b) => a.total - b.total);
       exceeds.forEach(o => {
-        const over = o.total - budget;
+        const over = o.total - perPersonBudget;
         html += `
           <article class="card exceeded">
             <div class="card-header">
               <div class="card-title">
                 <span>${o.restaurant}</span>
-                <span class="badge">Выше бюджета</span>
+                <span class="badge">Выше бюджета на человека</span>
               </div>
               <div class="chip-row">
-                <span class="chip">Первое: ${o.firstName}</span>
-                <span class="chip">Второе: ${o.secondName}</span>
+                <span class="chip">Горячее: ${o.hotName}</span>
+                <span class="chip">${sideLabel}: ${o.sideName}</span>
                 <span class="chip">Напиток: ${o.drinkName}</span>
               </div>
             </div>
@@ -769,10 +965,10 @@
               <div>Сумма блюд: <strong>${o.subtotal} ₸</strong></div>
               <div>Услуга: <strong>${o.service} ₸</strong> · Чаевые: <strong>${o.tip} ₸</strong></div>
               <div>
-                Итоговая сумма:
+                Итоговая сумма на одного:
                 <strong class="summary-danger">${o.total} ₸</strong>
                 <span class="badge-pill" style="margin-left: 6px; border-color: rgba(248,113,113,0.7);">
-                  <span class="badge-pill-dot" style="background:${"#f97373"}"></span>
+                  <span class="badge-pill-dot" style="background:#f97373"></span>
                   Перерасход ${over} ₸
                 </span>
               </div>
@@ -786,7 +982,31 @@
     showToast("Расчёт обновлён");
   }
 
-  window.addEventListener("load", optimize);
+  window.addEventListener("load", async () => {
+    await loadRestaurants();
+
+    const savedBudget = localStorage.getItem("bo_totalBudget");
+    const savedGuests = localStorage.getItem("bo_guests");
+    const savedSetType = localStorage.getItem("bo_setType");
+
+    if (savedBudget) {
+      const parsed = parseInt(savedBudget, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        budgetInput.value = parsed;
+      }
+    }
+    if (savedGuests) {
+      const parsedG = parseInt(savedGuests, 10);
+      if (!isNaN(parsedG) && parsedG > 0) {
+        guestsInput.value = parsedG;
+      }
+    }
+    if (savedSetType && setTypeSelect) {
+      setTypeSelect.value = savedSetType;
+    }
+
+    optimize();
+  });
 </script>
 </body>
 </html>

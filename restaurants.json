@@ -1,0 +1,254 @@
+[
+  {
+    "name": "Navat · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Бешбармак домашний", "price": 4200, "recommended": true },
+      { "name": "Куырдак по‑домашнему", "price": 3900 },
+      { "name": "Манты с говядиной (5 шт.)", "price": 3600 }
+    ],
+    "salads": [
+      { "name": "Салат «Оливье»", "price": 2200, "recommended": true },
+      { "name": "Салат из свежих овощей", "price": 1800 },
+      { "name": "Салат «Цезарь»", "price": 2600 }
+    ],
+    "drinks": [
+      { "name": "Чай чёрный 1 л", "price": 800, "recommended": true },
+      { "name": "Чай зелёный 1 л", "price": 900 },
+      { "name": "Айран 0.5 л", "price": 700 }
+    ],
+    "desserts": [
+      { "name": "Чизкейк классический", "price": 1900 },
+      { "name": "Медовик", "price": 1800 }
+    ],
+    "baked": [
+      { "name": "Самса с говядиной", "price": 900 },
+      { "name": "Лепёшка тандырная", "price": 500 }
+    ]
+  },
+  {
+    "name": "Daily Food · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Лагман домашний", "price": 3500, "recommended": true },
+      { "name": "Плов узбекский", "price": 3600 },
+      { "name": "Котлета с пюре", "price": 2900 }
+    ],
+    "salads": [
+      { "name": "Салат «Греческий»", "price": 2500, "recommended": true },
+      { "name": "Салат из капусты", "price": 900 },
+      { "name": "Салат с курицей и овощами", "price": 2100 }
+    ],
+    "drinks": [
+      { "name": "Лимонад 0.5 л", "price": 900, "recommended": true },
+      { "name": "Компот домашний 0.5 л", "price": 800 },
+      { "name": "Газировка 0.5 л", "price": 700 }
+    ],
+    "desserts": [
+      { "name": "Тирамису", "price": 2100 },
+      { "name": "Торт «Сникерс»", "price": 2200 }
+    ],
+    "baked": [
+      { "name": "Хачапури по‑аджарски", "price": 2600 },
+      { "name": "Чесночные гренки", "price": 1200 }
+    ]
+  },
+  {
+    "name": "Global Coffee · Turkistan",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Паста карбонара", "price": 3400, "recommended": true },
+      { "name": "Паста с лососем", "price": 3900 },
+      { "name": "Омлет с беконом", "price": 2800 }
+    ],
+    "salads": [
+      { "name": "Салат с курицей и авокадо", "price": 2800, "recommended": true },
+      { "name": "Салат с киноа и овощами", "price": 2600 }
+    ],
+    "drinks": [
+      { "name": "Капучино 0.3 л", "price": 1500, "recommended": true },
+      { "name": "Латте 0.3 л", "price": 1600 },
+      { "name": "Американо 0.25 л", "price": 1300 }
+    ],
+    "desserts": [
+      { "name": "Фонданы шоколадный", "price": 2300 },
+      { "name": "Маффин шоколадный", "price": 1200 }
+    ],
+    "baked": [
+      { "name": "Круассан сливочный", "price": 900 },
+      { "name": "Круассан с шоколадом", "price": 1000 }
+    ]
+  },
+  {
+    "name": "Shymkent Plaza Grill · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Стейк рибай", "price": 6800, "recommended": true },
+      { "name": "Стейк стриплойн", "price": 6400 },
+      { "name": "Крылышки BBQ", "price": 3200 }
+    ],
+    "salads": [
+      { "name": "Салат «Цезарь» с курицей", "price": 3200, "recommended": true },
+      { "name": "Салат с ростбифом", "price": 3400 }
+    ],
+    "drinks": [
+      { "name": "Морс ягодный 0.5 л", "price": 1100, "recommended": true },
+      { "name": "Лимонад домашний 0.5 л", "price": 1200 }
+    ],
+    "desserts": [
+      { "name": "Медовик", "price": 2000 },
+      { "name": "Чизкейк манговый", "price": 2300 }
+    ],
+    "baked": [
+      { "name": "Картофель по‑деревенски", "price": 1600 },
+      { "name": "Картофель фри", "price": 1400 }
+    ]
+  },
+  {
+    "name": "Lagman House · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Лагман по‑домашнему", "price": 3300, "recommended": true },
+      { "name": "Лагман жареный", "price": 3400 },
+      { "name": "Бешбармак по‑домашнему", "price": 4100 }
+    ],
+    "salads": [
+      { "name": "Салат из свежих овощей", "price": 1700, "recommended": true },
+      { "name": "Салат с редькой", "price": 1500 }
+    ],
+    "drinks": [
+      { "name": "Айран 0.5 л", "price": 700, "recommended": true },
+      { "name": "Чай зелёный 1 л", "price": 900 }
+    ],
+    "desserts": [
+      { "name": "Наполеон", "price": 1900 },
+      { "name": "Торт «Прага»", "price": 2000 }
+    ],
+    "baked": [
+      { "name": "Лепёшка тандырная", "price": 500 },
+      { "name": "Самса с мясом", "price": 800 }
+    ]
+  },
+  {
+    "name": "Kebap City · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Донер кебаб", "price": 2800, "recommended": true },
+      { "name": "Шашлык из курицы", "price": 3000 },
+      { "name": "Шашлык из говядины", "price": 3400 }
+    ],
+    "salads": [
+      { "name": "Салат «Фатуш»", "price": 2400, "recommended": true },
+      { "name": "Салат табуле", "price": 2300 }
+    ],
+    "drinks": [
+      { "name": "Айран 0.3 л", "price": 600, "recommended": true },
+      { "name": "Газировка 0.5 л", "price": 700 }
+    ],
+    "desserts": [
+      { "name": "Пахлава восточная", "price": 1800 },
+      { "name": "Халва", "price": 1200 }
+    ],
+    "baked": [
+      { "name": "Лаваш с сыром", "price": 1300 },
+      { "name": "Лаваш классический", "price": 900 }
+    ]
+  },
+  {
+    "name": "Family Cafe · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Котлета по‑домашнему с пюре", "price": 2900, "recommended": true },
+      { "name": "Куриное филе с рисом", "price": 2800 }
+    ],
+    "salads": [
+      { "name": "Салат «Винегрет»", "price": 1600, "recommended": true },
+      { "name": "Салат с капустой и морковью", "price": 1100 }
+    ],
+    "drinks": [
+      { "name": "Компот домашний 0.5 л", "price": 800, "recommended": true },
+      { "name": "Чай чёрный 0.5 л", "price": 600 }
+    ],
+    "desserts": [
+      { "name": "Сырники со сметаной", "price": 1800 },
+      { "name": "Маффин ванильный", "price": 1100 }
+    ],
+    "baked": [
+      { "name": "Пирожок с картофелем", "price": 600 },
+      { "name": "Пирожок с капустой", "price": 600 }
+    ]
+  },
+  {
+    "name": "Pizza House · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Пицца «Маргарита» 30 см", "price": 3600, "recommended": true },
+      { "name": "Пицца «Пепперони» 30 см", "price": 3900 },
+      { "name": "Пицца «4 сыра» 30 см", "price": 4100 }
+    ],
+    "salads": [
+      { "name": "Салат с моцареллой и томатами", "price": 2600, "recommended": true },
+      { "name": "Салат с рукколой и пармезаном", "price": 2800 }
+    ],
+    "drinks": [
+      { "name": "Газировка 0.5 л", "price": 700, "recommended": true },
+      { "name": "Сок 0.3 л", "price": 800 }
+    ],
+    "desserts": [
+      { "name": "Торт «Сникерс»", "price": 2100 },
+      { "name": "Панна-котта", "price": 1900 }
+    ],
+    "baked": [
+      { "name": "Чесночные гренки", "price": 1200 },
+      { "name": "Фокачча с розмарином", "price": 1400 }
+    ]
+  },
+  {
+    "name": "Oriental Express · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Плов узбекский", "price": 3600, "recommended": true },
+      { "name": "Куурдак", "price": 3800 }
+    ],
+    "salads": [
+      { "name": "Салат «Чача» с говядиной", "price": 2700, "recommended": true },
+      { "name": "Салат из зелени", "price": 1600 }
+    ],
+    "drinks": [
+      { "name": "Кумыс 0.3 л", "price": 1200, "recommended": true },
+      { "name": "Айран 0.3 л", "price": 600 }
+    ],
+    "desserts": [
+      { "name": "Шарлотка яблочная", "price": 1700 },
+      { "name": "Чак‑чак", "price": 1500 }
+    ],
+    "baked": [
+      { "name": "Самса с тыквой", "price": 800 },
+      { "name": "Самса с говядиной", "price": 900 }
+    ]
+  },
+  {
+    "name": "Student Eatery · Туркестан",
+    "city": "Turkestan",
+    "hot": [
+      { "name": "Плов студенческий", "price": 2200, "recommended": true },
+      { "name": "Макароны по‑флотски", "price": 2000 }
+    ],
+    "salads": [
+      { "name": "Салат из капусты", "price": 900, "recommended": true },
+      { "name": "Салат из свёклы", "price": 900 }
+    ],
+    "drinks": [
+      { "name": "Чай в стакане", "price": 300, "recommended": true },
+      { "name": "Компот 0.3 л", "price": 500 }
+    ],
+    "desserts": [
+      { "name": "Пирожное картошка", "price": 900 },
+      { "name": "Печенье овсяное", "price": 600 }
+    ],
+    "baked": [
+      { "name": "Самса недорогая", "price": 500 },
+      { "name": "Булочка с корицей", "price": 700 }
+    ]
+  }
+]
