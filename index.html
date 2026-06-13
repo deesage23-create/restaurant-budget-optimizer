@@ -220,14 +220,26 @@
     }
 
     input[type="number"],
-    select {
-      width: 100%;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text-main);
-      font-size: 14px;
-    }
+select {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 14px;
+}
+
+/* ДОБАВЛЯЕМ: тёмная тема для select и option */
+select {
+  background-color: transparent;
+  color: var(--text-main);
+}
+
+/* Некоторые браузеры берут стили option */
+select option {
+  background-color: #020617; /* тёмный фон списка */
+  color: #e5e7eb;            /* светлый текст */
+}
 
     input[type="number"]::placeholder {
       color: rgba(148, 163, 184, 0.7);
