@@ -1,291 +1,792 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Restaurant Budget Optimizer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-top: 0;
-        }
-        p {
-            color: #555;
-        }
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 160px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        select {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #43a047;
-        }
-        .results {
-            margin-top: 25px;
-        }
-        .card {
-            background: #fafafa;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            border-left: 5px solid #4CAF50;
-        }
-        .card.exceeded {
-            border-left-color: #e53935;
-            background: #fff4f4;
-        }
-        .card-title {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .small {
-            font-size: 13px;
-            color: #666;
-        }
-        .tag {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #e0f2f1;
-            color: #00695c;
-            margin-right: 6px;
-        }
-        .summary {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px dashed #ccc;
-            font-size: 14px;
-        }
-        @media (max-width: 600px) {
-            .controls {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            input[type="number"], select, button {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Restaurant Budget Optimizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --bg-panel: rgba(15, 23, 42, 0.9);
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.16);
+      --accent-strong: #16a34a;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.45);
+      --badge-bg: rgba(148, 163, 184, 0.18);
+      --danger: #f97373;
+      --danger-soft: rgba(248, 113, 113, 0.12);
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.65);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --blur-panel: blur(18px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(94, 234, 212, 0.12), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.10), transparent 60%),
+        var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: 24px;
+      max-width: 1120px;
+      width: 100%;
+      backdrop-filter: var(--blur-panel);
+      -webkit-backdrop-filter: var(--blur-panel);
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.32), transparent 52%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.26), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.96));
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 24px 26px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.12), transparent 55%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: var(--radius-pill);
+      padding: 5px 12px 5px 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.8);
+    }
+
+    .brand-pill-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0, #22c55e);
+      color: #022c22;
+      font-weight: 700;
+      font-size: 15px;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
+    }
+
+    .brand-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      max-width: 420px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.65), transparent);
+      margin: 14px 0 18px;
+    }
+
+    .mini-metrics {
+      display: flex;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .mini-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .mini-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35);
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .field-label span {
+      color: #9ca3ff;
+    }
+
+    .input-shell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.96);
+    }
+
+    .input-shell span.prefix {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    input[type="number"]::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding-right: 18px;
+      cursor: pointer;
+    }
+
+    .select-shell {
+      position: relative;
+    }
+
+    .select-shell::after {
+      content: "▾";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .primary-btn {
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      background: radial-gradient(circle at 10% 0%, #bbf7d0, #22c55e);
+      color: #052e16;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 16px 30px rgba(34, 197, 94, 0.45);
+      transition: transform 0.08s ease-out, box-shadow 0.12s ease-out;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(34, 197, 94, 0.55);
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.4);
+    }
+
+    .primary-btn-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #052e16;
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      max-width: 360px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .results-header-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .results-header-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .results-container {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 430px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-muted);
+    }
+
+    .pill-dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .pill-dot-red {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--danger);
+    }
+
+    .card {
+      padding: 12px 12px 10px;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.16), transparent 55%),
+        rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr);
+      gap: 8px 16px;
+      align-items: flex-start;
+    }
+
+    .card.exceeded {
+      background: radial-gradient(circle at 0% 0%, rgba(248, 113, 113, 0.14), transparent 55%),
+        rgba(15, 23, 42, 0.96);
+      border-color: rgba(248, 113, 113, 0.8);
+    }
+
+    @media (max-width: 700px) {
+      .card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      color: var(--text-muted);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-muted);
+    }
+
+    .summary {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: grid;
+      gap: 2px;
+    }
+
+    .summary strong {
+      color: var(--text-main);
+    }
+
+    .summary-accent {
+      color: var(--accent);
+    }
+
+    .summary-danger {
+      color: var(--danger);
+    }
+
+    .badge-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+    }
+
+    .results-empty {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 10px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-soft);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+      pointer-events: auto;
+    }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>🍽️ Restaurant Budget Optimizer</h1>
-    <p>Введи бюджет и посмотри, какие комбинации «первое + второе + напиток» помещаются в него с учётом услуги и чаевых.</p>
+<div class="app-shell">
+  <!-- Левая панель: ввод и описание -->
+  <section class="panel">
+    <div class="panel-inner">
+      <div class="brand-pill">
+        <span class="brand-pill-logo">RO</span>
+        <span>Restaurant Optimizer · v1.0</span>
+        <span class="brand-pill-dot"></span>
+      </div>
 
-    <div class="controls">
+      <div class="eyebrow">Бюджет на вечер</div>
+      <h1>Подбери идеальный заказ под свой бюджет</h1>
+      <p class="subtitle">
+        Введи сумму, укажи процент услуги и чаевых — получишь готовые комбинации из разных ресторанов с максимальной выгодой.
+      </p>
+
+      <div class="mini-metrics">
+        <div class="mini-metric">
+          <span class="mini-dot"></span>
+          <span>Учёт услуги и чаевых</span>
+        </div>
+        <div class="mini-metric">
+          <span class="mini-dot"></span>
+          <span>5+ пресетов ресторанов</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="controls">
         <div>
-            <label for="budget">Бюджет (тенге):</label><br>
-            <input type="number" id="budget" min="1" value="5000">
+          <div class="field-label">Бюджет, тенге <span>(обязательно)</span></div>
+          <div class="input-shell">
+            <span class="prefix">₸</span>
+            <input type="number" id="budget" min="1" value="5000" placeholder="Например, 5000" />
+          </div>
         </div>
         <div>
-            <label for="service">Услуга (%):</label><br>
-            <input type="number" id="service" min="0" max="30" value="10">
+          <div class="field-label">Услуга, %</div>
+          <div class="input-shell">
+            <input type="number" id="service" min="0" max="30" value="10" />
+          </div>
         </div>
         <div>
-            <label for="tips">Чаевые (%):</label><br>
-            <input type="number" id="tips" min="0" max="30" value="5">
+          <div class="field-label">Чаевые, %</div>
+          <div class="input-shell">
+            <input type="number" id="tips" min="0" max="30" value="5" />
+          </div>
         </div>
-        <div>
-            <label for="sort">Сортировать по:</label><br>
+        <div class="select-shell">
+          <div class="field-label">Сортировка вариантов</div>
+          <div class="input-shell">
             <select id="sort">
-                <option value="best">Лучшее использование бюджета</option>
-                <option value="cheapest">Самый дешёвый вариант</option>
-                <option value="name">По названию ресторана</option>
+              <option value="best">Лучшее использование бюджета</option>
+              <option value="cheapest">Самый недорогой вариант</option>
+              <option value="name">По названию ресторана</option>
             </select>
+          </div>
         </div>
-        <div style="align-self: flex-end;">
-            <button onclick="optimize()">Найти варианты</button>
-        </div>
-    </div>
+      </div>
 
-    <div class="results" id="results"></div>
+      <button class="primary-btn" onclick="optimize()">
+        <span class="primary-btn-dot"></span>
+        Найти оптимальный заказ
+      </button>
+
+      <p class="helper-text">
+        Рекомендуем оставлять небольшой запас (5–15%) от бюджета — приложение автоматически покажет остаток или перерасход.
+      </p>
+    </div>
+  </section>
+
+  <!-- Правая панель: результаты -->
+  <section class="panel">
+    <div class="panel-inner">
+      <div class="results-header">
+        <div>
+          <div class="results-header-title">Варианты заказов</div>
+          <div class="pill" id="summary-pill">
+            <span class="pill-dot-green"></span>
+            <span>Готово к расчёту</span>
+          </div>
+        </div>
+        <div class="results-header-meta" id="summary-meta">
+          Бюджет: 5000 ₸ · Услуга: 10% · Чаевые: 5%
+        </div>
+      </div>
+
+      <div class="results-container" id="results"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toast-text"></span>
 </div>
 
 <script>
-    // БАЗА ДАННЫХ РЕСТОРАНОВ (можно потом вынести в отдельный файл или бэкенд)
-    const restaurants = [
-        {
-            name: "Ресторан А",
-            first: { name: "Салат Цезарь", price: 800 },
-            second: { name: "Пицца Маргарита", price: 1500 },
-            drink: { name: "Кола 0.5л", price: 400 }
-        },
-        {
-            name: "Ресторан Б",
-            first: { name: "Суп фо", price: 900 },
-            second: { name: "Бургер классический", price: 1800 },
-            drink: { name: "Вода 0.5л", price: 300 }
-        },
-        {
-            name: "Ресторан В",
-            first: { name: "Крем-суп грибной", price: 700 },
-            second: { name: "Шашлык из говядины", price: 2200 },
-            drink: { name: "Морс", price: 350 }
-        },
-        {
-            name: "Ресторан Г",
-            first: { name: "Окрошка", price: 600 },
-            second: { name: "Плов", price: 1600 },
-            drink: { name: "Компот", price: 300 }
-        },
-        {
-            name: "Ресторан Д",
-            first: { name: "Салат Греческий", price: 850 },
-            second: { name: "Стейк", price: 2800 },
-            drink: { name: "Сок", price: 450 }
-        }
-    ];
+  const restaurants = [
+    {
+      name: "Ресторан А · Центр",
+      first: { name: "Салат «Цезарь»", price: 800 },
+      second: { name: "Пицца Маргарита", price: 1500 },
+      drink: { name: "Кола 0.5 л", price: 400 }
+    },
+    {
+      name: "Ресторан Б · Азия",
+      first: { name: "Суп фо", price: 900 },
+      second: { name: "Классический бургер", price: 1800 },
+      drink: { name: "Вода 0.5 л", price: 300 }
+    },
+    {
+      name: "Ресторан В · Гриль",
+      first: { name: "Грибной крем-суп", price: 700 },
+      second: { name: "Шашлык из говядины", price: 2200 },
+      drink: { name: "Морс", price: 350 }
+    },
+    {
+      name: "Ресторан Г · Домашний",
+      first: { name: "Окрошка", price: 600 },
+      second: { name: "Плов", price: 1600 },
+      drink: { name: "Компот", price: 300 }
+    },
+    {
+      name: "Ресторан Д · Стейк-хаус",
+      first: { name: "Салат «Греческий»", price: 850 },
+      second: { name: "Стейк", price: 2800 },
+      drink: { name: "Сок", price: 450 }
+    }
+  ];
 
-    function calculateOption(rest, servicePercent, tipPercent) {
-        const subtotal = rest.first.price + rest.second.price + rest.drink.price;
-        const service = subtotal * (servicePercent / 100);
-        const tip = subtotal * (tipPercent / 100);
-        const total = subtotal + service + tip;
+  const budgetInput = document.getElementById("budget");
+  const serviceInput = document.getElementById("service");
+  const tipsInput = document.getElementById("tips");
+  const sortSelect = document.getElementById("sort");
+  const resultsDiv = document.getElementById("results");
+  const summaryMeta = document.getElementById("summary-meta");
+  const summaryPill = document.getElementById("summary-pill");
+  const toast = document.getElementById("toast");
+  const toastText = document.getElementById("toast-text");
 
-        return {
-            restaurant: rest.name,
-            firstName: rest.first.name,
-            secondName: rest.second.name,
-            drinkName: rest.drink.name,
-            subtotal,
-            service: Math.round(service),
-            tip: Math.round(tip),
-            total: Math.round(total)
-        };
+  function showToast(message) {
+    toastText.textContent = message;
+    toast.classList.add("visible");
+    setTimeout(() => {
+      toast.classList.remove("visible");
+    }, 2300);
+  }
+
+  function calculateOption(rest, servicePercent, tipPercent) {
+    const subtotal = rest.first.price + rest.second.price + rest.drink.price;
+    const service = subtotal * (servicePercent / 100);
+    const tip = subtotal * (tipPercent / 100);
+    const total = subtotal + service + tip;
+
+    return {
+      restaurant: rest.name,
+      firstName: rest.first.name,
+      secondName: rest.second.name,
+      drinkName: rest.drink.name,
+      subtotal,
+      service: Math.round(service),
+      tip: Math.round(tip),
+      total: Math.round(total)
+    };
+  }
+
+  function optimize() {
+    const budget = parseInt(budgetInput.value, 10);
+    const servicePercent = parseInt(serviceInput.value, 10);
+    const tipPercent = parseInt(tipsInput.value, 10);
+    const sortMode = sortSelect.value;
+
+    if (!budget || budget <= 0) {
+      showToast("Введите бюджет больше 0 тенге.");
+      resultsDiv.innerHTML =
+        '<p class="results-empty">Введите корректный бюджет, чтобы увидеть варианты.</p>';
+      summaryPill.innerHTML =
+        '<span class="pill-dot-red"></span><span>Требуется бюджет</span>';
+      return;
     }
 
-    function optimize() {
-        const budgetInput = document.getElementById('budget');
-        const serviceInput = document.getElementById('service');
-        const tipsInput = document.getElementById('tips');
-        const sortSelect = document.getElementById('sort');
-        const resultsDiv = document.getElementById('results');
+    summaryMeta.textContent = `Бюджет: ${budget} ₸ · Услуга: ${servicePercent}% · Чаевые: ${tipPercent}%`;
 
-        const budget = parseInt(budgetInput.value, 10);
-        const servicePercent = parseInt(serviceInput.value, 10);
-        const tipPercent = parseInt(tipsInput.value, 10);
-        const sortMode = sortSelect.value;
+    const options = restaurants.map(r =>
+      calculateOption(r, servicePercent, tipPercent)
+    );
 
-        if (!budget || budget <= 0) {
-            resultsDiv.innerHTML = '<p style="color:red;">Введите корректный бюджет больше 0.</p>';
-            return;
-        }
+    const fits = options.filter(o => o.total <= budget);
+    const exceeds = options.filter(o => o.total > budget);
 
-        const options = restaurants.map(r =>
-            calculateOption(r, servicePercent, tipPercent)
-        );
-
-        // Делим на подходящие и превышающие бюджет
-        const fits = options.filter(o => o.total <= budget);
-        const exceeds = options.filter(o => o.total > budget);
-
-        // Сортировка подходящих
-        if (sortMode === 'best') {
-            // Лучшее использование бюджета — тот, у кого меньше всего "остаток"
-            fits.sort((a, b) => (budget - a.total) - (budget - b.total));
-        } else if (sortMode === 'cheapest') {
-            fits.sort((a, b) => a.total - b.total);
-        } else if (sortMode === 'name') {
-            fits.sort((a, b) => a.restaurant.localeCompare(b.restaurant, 'ru'));
-        }
-
-        let html = '';
-
-        html += `<p class="small">
-            Бюджет: <strong>${budget}</strong> ₸ ·
-            Услуга: ${servicePercent}% · Чаевые: ${tipPercent}%
-        </p>`;
-
-        if (fits.length > 0) {
-            html += `<h2>✅ Варианты, которые помещаются в бюджет:</h2>`;
-            fits.forEach((o, index) => {
-                const remaining = budget - o.total;
-                html += `
-                <div class="card">
-                    <div class="card-title">${index + 1}. ${o.restaurant}</div>
-                    <div>
-                        <span class="tag">Первое: ${o.firstName}</span>
-                        <span class="tag">Второе: ${o.secondName}</span>
-                        <span class="tag">Напиток: ${o.drinkName}</span>
-                    </div>
-                    <div class="summary">
-                        💰 Сумма блюд: ${o.subtotal} ₸<br>
-                        🧾 Услуга: ${o.service} ₸ · Чаевые: ${o.tip} ₸<br>
-                        ✅ Итого: <strong>${o.total} ₸</strong> (остается ${remaining} ₸ из бюджета)
-                    </div>
-                </div>
-                `;
-            });
-        } else {
-            html += `<h2>⚠️ Ни один вариант не помещается в бюджет ${budget} ₸</h2>`;
-        }
-
-        if (exceeds.length > 0) {
-            html += `<h2>❌ Варианты, которые превышают бюджет:</h2>`;
-            exceeds.sort((a, b) => a.total - b.total);
-            exceeds.forEach((o) => {
-                const over = o.total - budget;
-                html += `
-                <div class="card exceeded">
-                    <div class="card-title">${o.restaurant}</div>
-                    <div>
-                        <span class="tag">Первое: ${o.firstName}</span>
-                        <span class="tag">Второе: ${o.secondName}</span>
-                        <span class="tag">Напиток: ${o.drinkName}</span>
-                    </div>
-                    <div class="summary">
-                        💰 Сумма блюд: ${o.subtotal} ₸<br>
-                        🧾 Услуга: ${o.service} ₸ · Чаевые: ${o.tip} ₸<br>
-                        ❌ Итого: <strong>${o.total} ₸</strong> (превышает бюджет на ${over} ₸)
-                    </div>
-                </div>
-                `;
-            });
-        }
-
-        resultsDiv.innerHTML = html;
+    if (fits.length === 0) {
+      summaryPill.innerHTML =
+        '<span class="pill-dot-red"></span><span>Все варианты выходят за бюджет</span>';
+    } else {
+      summaryPill.innerHTML =
+        '<span class="pill-dot-green"></span><span>Найдено ' +
+        fits.length +
+        " подходящих вариантов</span>";
     }
 
-    // Автозапуск при загрузке страницы с дефолтным бюджетом
-    window.addEventListener('load', optimize);
+    if (sortMode === "best") {
+      fits.sort((a, b) => (budget - a.total) - (budget - b.total));
+    } else if (sortMode === "cheapest") {
+      fits.sort((a, b) => a.total - b.total);
+    } else if (sortMode === "name") {
+      fits.sort((a, b) => a.restaurant.localeCompare(b.restaurant, "ru"));
+    }
+
+    let html = "";
+
+    if (fits.length > 0) {
+      fits.forEach((o, index) => {
+        const remaining = budget - o.total;
+        html += `
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>${index + 1}. ${o.restaurant}</span>
+                <span class="badge">В пределах бюджета</span>
+              </div>
+              <div class="chip-row">
+                <span class="chip">Первое: ${o.firstName}</span>
+                <span class="chip">Второе: ${o.secondName}</span>
+                <span class="chip">Напиток: ${o.drinkName}</span>
+              </div>
+            </div>
+            <div class="summary">
+              <div>Сумма блюд: <strong>${o.subtotal} ₸</strong></div>
+              <div>Услуга: <strong>${o.service} ₸</strong> · Чаевые: <strong>${o.tip} ₸</strong></div>
+              <div>
+                Итоговая сумма:
+                <strong class="summary-accent">${o.total} ₸</strong>
+                <span class="badge-pill" style="margin-left: 6px;">
+                  <span class="badge-pill-dot"></span>
+                  Остаток ${remaining} ₸
+                </span>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+    } else {
+      html += `
+        <p class="results-empty">
+          Ни один пресет не помещается в бюджет ${budget} ₸. Попробуйте увеличить сумму
+          или уменьшить услугу/чаевые.
+        </p>
+      `;
+    }
+
+    if (exceeds.length > 0) {
+      exceeds.sort((a, b) => a.total - b.total);
+      exceeds.forEach(o => {
+        const over = o.total - budget;
+        html += `
+          <article class="card exceeded">
+            <div class="card-header">
+              <div class="card-title">
+                <span>${o.restaurant}</span>
+                <span class="badge">Выше бюджета</span>
+              </div>
+              <div class="chip-row">
+                <span class="chip">Первое: ${o.firstName}</span>
+                <span class="chip">Второе: ${o.secondName}</span>
+                <span class="chip">Напиток: ${o.drinkName}</span>
+              </div>
+            </div>
+            <div class="summary">
+              <div>Сумма блюд: <strong>${o.subtotal} ₸</strong></div>
+              <div>Услуга: <strong>${o.service} ₸</strong> · Чаевые: <strong>${o.tip} ₸</strong></div>
+              <div>
+                Итоговая сумма:
+                <strong class="summary-danger">${o.total} ₸</strong>
+                <span class="badge-pill" style="margin-left: 6px; border-color: rgba(248,113,113,0.7);">
+                  <span class="badge-pill-dot" style="background:${"#f97373"}"></span>
+                  Перерасход ${over} ₸
+                </span>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+    }
+
+    resultsDiv.innerHTML = html;
+    showToast("Расчёт обновлён");
+  }
+
+  window.addEventListener("load", optimize);
 </script>
 </body>
 </html>
